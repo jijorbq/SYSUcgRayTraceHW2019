@@ -10,11 +10,14 @@
 class sphere: public hittable  {
     public:
         sphere() {}
-        sphere(vec3 cen, float r) : center(cen), radius(r)  {};
+        sphere(vec3 cen, float r, vec3 col=vec3(0,0,0), material *m0=NULL, material *m1=NULL, material *m2=NULL){
+            center = cen; radius = r; color = col; mat_ptr[0] = m0; mat_ptr[1] = m1; mat_ptr[2] = m2;
+        }
         virtual bool hit(const ray& r, float tmin, float tmax, hit_record& rec) const;
         vec3 center;
+        vec3 color;
         float radius;
-        material *mat_ptr;
+        material *mat_ptr[3];
 };
 
 bool sphere::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {
@@ -29,8 +32,9 @@ bool sphere::hit(const ray& r, float t_min, float t_max, hit_record& rec) const 
             rec.t = temp;
             rec.p = r.point_at_parameter(rec.t);
             rec.normal = (rec.p - center) / radius;
-            rec.mat_ptr = mat_ptr;
-            rec.col = vec3(0,0,0);
+            for(int i=0;i<3;i++)
+                rec.mat_ptr[i] = mat_ptr[i];
+            rec.light = vec3(0,0,0);
             return true;
         }
         temp = (-b + sqrt(discriminant)) / a;
@@ -38,8 +42,9 @@ bool sphere::hit(const ray& r, float t_min, float t_max, hit_record& rec) const 
             rec.t = temp;
             rec.p = r.point_at_parameter(rec.t);
             rec.normal = (rec.p - center) / radius;
-            rec.mat_ptr = mat_ptr;
-            rec.col = vec3(0,0,0);
+            for(int i=0;i<3;i++)
+                rec.mat_ptr[i] = mat_ptr[i];
+            rec.light = vec3(0,0,0);
             return true;
         }
     }

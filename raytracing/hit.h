@@ -2,9 +2,10 @@
 #define HIT_H
 
 #include<glm/glm.hpp>
-#include<math.h>
+#include<vector>
 #include "ray.h"
 #define vec3 glm::vec3
+#define vec2 glm::vec2
 
 class material;
 
@@ -12,8 +13,10 @@ struct hit_record {
     float t;
     vec3 p;
     vec3 normal;
-    vec3 col;
-    material *mat_ptr;
+    vec3 light;
+    vec3 color;
+    vec2 pos;
+    material *mat_ptr[3];
 };
 
 class hittable  {

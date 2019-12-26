@@ -16,6 +16,7 @@ SOURCES += \
     myglwidget.cpp
 
 HEADERS += \
+    Loader.h \
     camera.h \
     geometry.h \
     hit.h \
@@ -25,4 +26,6 @@ HEADERS += \
     polygon.h \
     random.h \
     ray.h \
-    sphere.h
+    sphere.h \
+    stb_image.h \
+    texture.h
