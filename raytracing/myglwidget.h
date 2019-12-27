@@ -1,20 +1,7 @@
 #ifndef MYGLWIDGET_H
 #define MYGLWIDGET_H
 
-#ifdef MAC_OS
-#include <QtOpenGL/QtOpenGL>
-#else
-#include <GL/glew.h>
-#endif
-#include <QtGui>
-#include <QOpenGLWidget>
-#include <QOpenGLFunctions>
-#include <iostream>
-#include <vector>
-#include <cstdio>
-#include <string>
-#include <fstream>
-#include <sstream>
+#include "utils.h"
 
 class MyGLWidget : public QOpenGLWidget{
     Q_OBJECT

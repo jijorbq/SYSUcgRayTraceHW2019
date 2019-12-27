@@ -1,12 +1,10 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include<glm/glm.hpp>
-#include<math.h>
-#include"ray.h"
-#include"random.h"
-#include"geometry.h"
-#define vec3 glm::vec3
+#include "ray.h"
+#include "random.h"
+#include "geometry.h"
+#include "utils.h"
 
 vec3 random_in_unit_disk() {
     vec3 p;
@@ -18,12 +16,12 @@ vec3 random_in_unit_disk() {
 
 class camera {
     public:
-        camera(vec3 lookfrom, vec3 lookat, vec3 vup, float vfov, float aspect,
-               float aperture, float focus_dist) {
+        camera(vec3 lookfrom, vec3 lookat, vec3 vup, double vfov, double aspect,
+               double aperture, double focus_dist) {
             lens_radius = aperture / 2;
-            float theta = vfov*M_PI/180;
-            float half_height = tan(theta/2);
-            float half_width = aspect * half_height;
+            double theta = vfov*M_PI/180;
+            double half_height = tan(theta/2);
+            double half_width = aspect * half_height;
             origin = lookfrom;
             w = unit_vector(lookfrom - lookat);
             u = unit_vector(cross(vup, w));
@@ -35,21 +33,11 @@ class camera {
             horizontal = 2*half_width*focus_dist*u;
             vertical = 2*half_height*focus_dist*v;
 
-
-            printf("--- %f %f %f\n", w.x, w.y, w.z);
-            printf("--- %f %f %f\n", u.x, u.y, u.z);
-            printf("--- %f %f %f\n", v.x, v.y, v.z);
-            printf("%f %f %f %f %f\n",theta, half_height, half_width, focus_dist, lens_radius);
-
-            printf("--- %f %f %f\n", origin.x, origin.y, origin.z);
-            printf("--- %f %f %f\n", lower_left_corner.x, lower_left_corner.y, lower_left_corner.z);
-            printf("--- %f %f %f\n", horizontal.x, horizontal.y, horizontal.z);
-            printf("--- %f %f %f\n", vertical.x, vertical.y, vertical.z);
         }
 
-        ray get_ray(float s, float t) {
+        ray get_ray(double s, double t) {
             vec3 rd = lens_radius*random_in_unit_disk();
-            vec3 offset = u * rd.x + v * rd.y;
+            vec3 offset = u * rd.x() + v * rd.y();
             //printf("+++ %f %f %f\n", rd.x, rd.y, rd.z);
             //printf("+++ %f %f %f\n", offset.x, offset.y, offset.z);
             return ray(origin + offset,
@@ -62,7 +50,7 @@ class camera {
         vec3 horizontal;
         vec3 vertical;
         vec3 u, v, w;
-        float lens_radius;
+        double lens_radius;
 };
 
 #endif // CAMERA_H

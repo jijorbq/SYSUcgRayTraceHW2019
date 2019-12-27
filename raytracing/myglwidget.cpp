@@ -10,11 +10,9 @@
 #include "camera.h"
 #include "Loader.h"
 #include "texture.h"
-#include <ctime>
-#include <glm/glm.hpp>
+#include "utils.h"
 
 #define MAXFLOAT 1000000000.0
-#define vec3 glm::vec3
 
 MyGLWidget::MyGLWidget(QWidget *parent)
     :QOpenGLWidget(parent)
@@ -35,25 +33,26 @@ void MyGLWidget::initializeGL()
 bool FLAG=0;
 void MyGLWidget::resizeGL(int width, int height)
 {
-    FLAG=0;
+    //FLAG=0;
 	glViewport(0, 0, width, height);
 	update();
 }
 
-float* trans1()
+double* trans1()
 {
-    float *matrix = new float[16];
+    double *matrix = new double[16];
     glPushMatrix();
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     //glTranslatef(-0.2f, 0.5f, 0.0f);
     //glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
     //glRotatef(30.0f, 0.0f, 0.0f, 1.0f);
-    //glScalef(0.1f, 0.1f, 0.1f);
-    glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
+    glScaled(0.7, 0.7, 0.7);
+    glGetDoublev(GL_MODELVIEW_MATRIX, matrix);
     glPopMatrix();
     return matrix;
 }
+
 
 vec3 color(const ray& r, hittable *world, int depth, vec3 remain, int X, int Y) {
     hit_record rec;
@@ -62,7 +61,7 @@ vec3 color(const ray& r, hittable *world, int depth, vec3 remain, int X, int Y) 
         ray scattered;
         vec3 attenuation;
         vec3 col = vec3(0,0,0);
-        if(depth>=20 || length(remain)<1e-5){
+        if(depth>=20 || remain.length()<1e-5){
             return vec3(0,0,0);
         }
         // 20 can be change
@@ -77,8 +76,8 @@ vec3 color(const ray& r, hittable *world, int depth, vec3 remain, int X, int Y) 
     }
     else {
         vec3 unit_direction = unit_vector(r.direction());
-        float t = 0.5f*(unit_direction.y + 1.0f);
-        return (1.0f-t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0);
+        double t = 0.5*(unit_direction.y() + 1.0);
+        return (1.0-t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0);
     }
 }
 
@@ -95,7 +94,7 @@ void MyGLWidget::paintGL()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-    int W=width(), H=height(), S=50; // 抗锯齿
+    int W=width(), H=height(), S=1; // 抗锯齿
 
     //hittable *world = random_scene();
     hittable *world = load_scene("pig", trans1());
@@ -103,9 +102,14 @@ void MyGLWidget::paintGL()
 
     vec3 lookfrom(13,2,3);
     vec3 lookat(0,0,0);
-    float dist_to_focus = 10.0;
-    float aperture = 0.1;
-    camera cam(lookfrom, lookat, vec3(0,1,0), 20, float(W)/float(H), aperture, dist_to_focus);
+    double dist_to_focus = 10.0;
+    double aperture = 0.1;
+    camera cam(lookfrom, lookat, vec3(0,1,0), 20, double(W)/double(H), aperture, dist_to_focus);
+
+
+    FILE* fp=fopen("D:/CG_homework/raytracing/pic.txt","w+");
+
+    fprintf(fp, "%d %d\n", W, H);
 
     printf("start!\n");
     for(int i = 0; i < W; i++) {
@@ -113,25 +117,27 @@ void MyGLWidget::paintGL()
             vec3 col(0, 0, 0);
             int ti=clock();
             for (int k = 0; k < S; k++) {
-                float u = float(i + random_double()) / float(W);
-                float v = float(j + random_double()) / float(H);
-                // float u = float(i) / float(W);
-                // float v = float(j) / float(H);
-                // use this if S==0
+                //float u = float(i + random_double()) / float(W);
+                //float v = float(j + random_double()) / float(H);
+                float u = float(i) / float(W);
+                float v = float(j) / float(H);
+                // use this if S==1
                 ray r = cam.get_ray(u, v);
                 col += color(r, world, 0, vec3(1.0, 1.0, 1.0), i, j);
             }
             col /= float(S);
-            col = vec3(sqrt(col.x), sqrt(col.y), sqrt(col.z));
+            col = vec3(sqrt(col.x()), sqrt(col.y()), sqrt(col.z()));
+            fprintf(fp, "%f %f %f\n",col.x(),col.y(),col.z());
 
             glBegin(GL_POINTS);
             glVertex3i(i,j,0);
-            glColor3f(col.x, col.y, col.z);
+            glColor3d(col.x(), col.y(), col.z());
             glEnd();
 
             if(j==H-1) std::cout<<"time for pixel ("<<i<<','<<j<<"): "<<clock()-ti<<std::endl;
         }
     }
+    fclose(fp);
 
     FLAG=2;
 }

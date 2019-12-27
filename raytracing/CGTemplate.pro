@@ -28,4 +28,5 @@ HEADERS += \
     ray.h \
     sphere.h \
     stb_image.h \
-    texture.h
+    texture.h \
+    utils.h
