@@ -1,16 +1,15 @@
 #ifndef HIT_H
 #define HIT_H
 
-#include<glm/glm.hpp>
-#include<vector>
+#include "utils.h"
 #include "ray.h"
-#define vec3 glm::vec3
+#include "geometry.h"
 #define vec2 glm::vec2
 
 class material;
 
 struct hit_record {
-    float t;
+    double t;
     vec3 p;
     vec3 normal;
     vec3 light;
@@ -22,7 +21,7 @@ struct hit_record {
 class hittable  {
     public:
         virtual bool hit(
-            const ray& r, float t_min, float t_max, hit_record& rec) const = 0;
+            const ray& r, double t_min, double t_max, hit_record& rec) const = 0;
 };
 
 class material  {

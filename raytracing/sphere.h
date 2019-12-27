@@ -1,33 +1,32 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include<glm/glm.hpp>
-#include<math.h>
 #include "ray.h"
 #include "hit.h"
-#define vec3 glm::vec3
+#include "utils.h"
+#include "geometry.h"
 
 class sphere: public hittable  {
     public:
         sphere() {}
-        sphere(vec3 cen, float r, vec3 col=vec3(0,0,0), material *m0=NULL, material *m1=NULL, material *m2=NULL){
+        sphere(vec3 cen, double r, vec3 col=vec3(0,0,0), material *m0=NULL, material *m1=NULL, material *m2=NULL){
             center = cen; radius = r; color = col; mat_ptr[0] = m0; mat_ptr[1] = m1; mat_ptr[2] = m2;
         }
-        virtual bool hit(const ray& r, float tmin, float tmax, hit_record& rec) const;
+        virtual bool hit(const ray& r, double tmin, double tmax, hit_record& rec) const;
         vec3 center;
         vec3 color;
-        float radius;
+        double radius;
         material *mat_ptr[3];
 };
 
-bool sphere::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {
+bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
     vec3 oc = r.origin() - center;
-    float a = dot(r.direction(), r.direction());
-    float b = dot(oc, r.direction());
-    float c = dot(oc, oc) - radius*radius;
-    float discriminant = b*b - a*c;
+    double a = dot(r.direction(), r.direction());
+    double b = dot(oc, r.direction());
+    double c = dot(oc, oc) - radius*radius;
+    double discriminant = b*b - a*c;
     if (discriminant > 0) {
-        float temp = (-b - sqrt(discriminant))/a;
+        double temp = (-b - sqrt(discriminant))/a;
         if (temp < t_max && temp > t_min) {
             rec.t = temp;
             rec.p = r.point_at_parameter(rec.t);

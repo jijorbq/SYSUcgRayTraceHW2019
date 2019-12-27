@@ -1,18 +1,19 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include<glm/glm.hpp>
-#include<math.h>
+#include "utils.h"
 #include "hit.h"
 #include "random.h"
 #include "geometry.h"
 #include "texture.h"
-#define vec3 glm::vec3
 
+vec3 reflect(const vec3& v, const vec3& n) {
+    return v - 2*dot(v,n)*n;
+}
 
 class metal : public material {
     public:
-        metal(const vec3& a, texture * t=NULL, float f=0.0f) : albedo(a), tex(t) {
+        metal(const vec3& a, texture * t=NULL, double f=0.0f) : albedo(a), tex(t) {
             if (f < 1) fuzz = f; else fuzz = 1;
         }
         virtual bool scatter(const ray& r_in, const hit_record& rec,
@@ -25,7 +26,7 @@ class metal : public material {
             return (dot(scattered.direction(), rec.normal) > 0);
         }
         vec3 albedo;
-        float fuzz;
+        double fuzz;
         texture * tex;
 };
 // 镜面反射
@@ -47,10 +48,10 @@ class lambertian : public material {
 };
 // 漫反射
 
-bool refract(const vec3& v, const vec3& n, float ni_over_nt, vec3& refracted) {
+bool refract(const vec3& v, const vec3& n, double ni_over_nt, vec3& refracted) {
     vec3 uv = unit_vector(v);
-    float dt = dot(uv, n);
-    float discriminant = 1.0 - ni_over_nt*ni_over_nt*(1-dt*dt);
+    double dt = dot(uv, n);
+    double discriminant = 1.0 - ni_over_nt*ni_over_nt*(1-dt*dt);
     if (discriminant > 0) {
         refracted = ni_over_nt*(uv - n*dt) - n*sqrt(discriminant);
         return true;
@@ -59,25 +60,25 @@ bool refract(const vec3& v, const vec3& n, float ni_over_nt, vec3& refracted) {
         return false;
 }
 
-float schlick(float cosine, float ref_idx) {
-    float r0 = (1-ref_idx) / (1+ref_idx);
+double schlick(double cosine, double ref_idx) {
+    double r0 = (1-ref_idx) / (1+ref_idx);
     r0 = r0*r0;
     return r0 + (1-r0)*pow((1 - cosine),5);
 }
 
 class dielectric : public material {
     public:
-        dielectric(float ri) : ref_idx(ri) {}
+        dielectric(double ri) : ref_idx(ri) {}
         virtual bool scatter(const ray& r_in, const hit_record& rec,
                              vec3& attenuation, ray& scattered) const {
             vec3 outward_normal;
             vec3 reflected = reflect(r_in.direction(), rec.normal);
-            float ni_over_nt;
+            double ni_over_nt;
             attenuation = vec3(1.0, 1.0, 1.0);
             vec3 refracted;
 
-            float reflect_prob;
-            float cosine;
+            double reflect_prob;
+            double cosine;
 
             if (dot(r_in.direction(), rec.normal) > 0) {
                  outward_normal = -rec.normal;
@@ -109,7 +110,7 @@ class dielectric : public material {
             return true;
         }
 
-        float ref_idx;
+        double ref_idx;
 };
 // 折射
 
