@@ -5,6 +5,7 @@
 #include "ray.h"
 #include "geometry.h"
 #include "hit.h"
+#include "aabb.h"
 #define vec2 glm::vec2
 
 class polygon: public hittable  {
@@ -21,6 +22,7 @@ class polygon: public hittable  {
             mat_ptr[2] = m2;
         }
         virtual bool hit(const ray& r, double tmin, double tmax, hit_record& rec) const;
+        virtual bool bounding_box(float t0, float t1, aabb& box) const;
         bool InPolygon(vec3 point) const;
         std::vector<vec3> points; // point in polygon
         std::vector<vec2> ppoints; // point in texture img
@@ -28,7 +30,14 @@ class polygon: public hittable  {
         vec3 normal; // normal
         material *mat_ptr[3]; // material
 };
-
+bool polygon::bounding_box(float t0, float t1, aabb &box) const{
+    box=aabb(points.begin(),points.begin());
+    for (int i=0; i<points.size(); ++i)
+        for (int j=0; j<3; ++j)
+            box._min=ffmin(box._min[j], points[i][j]),
+            box._max=ffmax(box._max[j], points[i][j]);
+    return true;
+}
 bool polygon::InPolygon(vec3 P)const {
     int len=points.size();
     for(int i=1;i+1<len;i++)

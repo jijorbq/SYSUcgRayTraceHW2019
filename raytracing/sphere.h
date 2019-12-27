@@ -5,6 +5,7 @@
 #include "hit.h"
 #include "utils.h"
 #include "geometry.h"
+#include "aabb.h"
 
 class sphere: public hittable  {
     public:
@@ -18,11 +19,18 @@ class sphere: public hittable  {
             mat_ptr[2] = m2;
         }
         virtual bool hit(const ray& r, double tmin, double tmax, hit_record& rec) const;
+        virtual bool bounding_box(float t0, float t1, aabb& box) const;
+
         vec3 center;
         vec3 color;
         double radius;
         material *mat_ptr[3];
 };
+
+bool sphere::bounding_box(float t0, float t1, aabb& box) const {
+    box = aabb(center - vec3(radius, radius, radius), center + vec3(radius, radius, radius));
+    return true;
+}
 
 bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
     vec3 oc = r.origin() - center;
