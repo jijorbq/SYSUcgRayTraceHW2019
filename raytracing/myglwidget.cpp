@@ -96,8 +96,8 @@ void MyGLWidget::paintGL()
 
     int W=width(), H=height(), S=1; // 抗锯齿
 
-    //hittable *world = random_scene();
-    hittable *world = load_scene("pig", trans1());
+    hittable *world = random_scene();
+    //hittable *world = load_scene("pig", trans1());
     // load scene
 
     vec3 lookfrom(13,2,3);

@@ -46,45 +46,57 @@ void translate(double *matrix, double *poi)
 }
 // translate by matrix
 
-hittable *random_scene() {
-    int n = 500;
-    hittable **list = new hittable*[n+1];
-    list[0] =  new sphere(vec3(0,-1000,0), 1000, vec3(0, 0, 0),  new lambertian(vec3(0.5, 0.5, 0.5)));
-    int i = 1;
-    for (int a = -11; a < 11; a+=1) {
-        for (int b = -11; b < 11; b+=1) {
-            double choose_mat = random_double();
-            vec3 center(a+0.9*random_double(),0.2,b+0.9*random_double());
-            if ((center-vec3(4,0.2,0)).length() > 0.9) {
-                if (choose_mat < 0.8) {  // diffuse
-                    list[i++] = new sphere(center, 0.2, vec3(0, 0, 0),
-                        new lambertian(vec3(random_double()*random_double(),
-                                            random_double()*random_double(),
-                                            random_double()*random_double()), NULL
-                        )
-                    );
-                }
-                else if (choose_mat < 0.95) { // metal
-                    list[i++] = new sphere(center, 0.2, vec3(0, 0, 0),
-                            new metal(vec3(0.5*(1 + random_double()),
-                                           0.5*(1 + random_double()),
-                                           0.5*(1 + random_double())),
-                                           NULL, 0.5*random_double())
-                                     );
-                }
-                else {  // glass
-                    list[i++] = new sphere(center, 0.2, vec3(0, 0, 0), new dielectric(1.5));
-                }
-            }
-        }
-    }
 
-    list[i++] = new sphere(vec3(0, 1, 0), 1.0, vec3(0, 0, 0), new dielectric(1.5));
-    list[i++] = new sphere(vec3(-4, 1, 0), 1.0, vec3(0, 0, 0), new lambertian(vec3(0.4, 0.2, 0.1), NULL));
-    list[i++] = new sphere(vec3(4, 1, 0), 1.0, vec3(0, 0, 0), new metal(vec3(0.7, 0.6, 0.5), NULL, 0.0));
+hittable *random_scene() {
+    int num=10;
+    hittable **list = new hittable*[num+1];
+    int i=1;
+    list[0] =  new sphere(vec3(0,-1000,0), 1000, vec3(255,251,240),  new lambertian(vec3(0.5, 0.5, 0.5)));
 
     return new hittable_list(list,i);
 }
+
+
+
+// hittable *random_scene() {
+//     int n = 500;
+//     hittable **list = new hittable*[n+1];
+//     list[0] =  new sphere(vec3(0,-1000,0), 1000, vec3(0, 0, 0),  new lambertian(vec3(0.5, 0.5, 0.5)));
+//     int i = 1;
+//     for (int a = -11; a < 11; a+=1) {
+//         for (int b = -11; b < 11; b+=1) {
+//             double choose_mat = random_double();
+//             vec3 center(a+0.9*random_double(),0.2,b+0.9*random_double());
+//             if ((center-vec3(4,0.2,0)).length() > 0.9) {
+//                 if (choose_mat < 0.8) {  // diffuse
+//                     list[i++] = new sphere(center, 0.2, vec3(0, 0, 0),
+//                         new lambertian(vec3(random_double()*random_double(),
+//                                             random_double()*random_double(),
+//                                             random_double()*random_double()), NULL
+//                         )
+//                     );
+//                 }
+//                 else if (choose_mat < 0.95) { // metal
+//                     list[i++] = new sphere(center, 0.2, vec3(0, 0, 0),
+//                             new metal(vec3(0.5*(1 + random_double()),
+//                                            0.5*(1 + random_double()),
+//                                            0.5*(1 + random_double())),
+//                                            NULL, 0.5*random_double())
+//                                      );
+//                 }
+//                 else {  // glass
+//                     list[i++] = new sphere(center, 0.2, vec3(0, 0, 0), new dielectric(1.5));
+//                 }
+//             }
+//         }
+//     }
+
+//     list[i++] = new sphere(vec3(0, 1, 0), 1.0, vec3(0, 0, 0), new dielectric(1.5));
+//     list[i++] = new sphere(vec3(-4, 1, 0), 1.0, vec3(0, 0, 0), new lambertian(vec3(0.4, 0.2, 0.1), NULL));
+//     list[i++] = new sphere(vec3(4, 1, 0), 1.0, vec3(0, 0, 0), new metal(vec3(0.7, 0.6, 0.5), NULL, 0.0));
+
+//     return new hittable_list(list,i);
+// }
 
 
 hittable *combine(std::string objfile,std::string mtlfile, std::string basicfile, double matrix[])

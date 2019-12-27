@@ -12,8 +12,13 @@ class polygon: public hittable  {
         polygon() {}
         polygon(std::vector<vec3> pos, std::vector<vec2> ppos, vec3 nor, vec3 color,
                 material *m0=NULL, material *m1=NULL, material *m2=NULL){
-            points = pos; ppoints = ppos; normal = nor; light = color;
-            mat_ptr[0] = m0; mat_ptr[1] = m1; mat_ptr[2] = m2;
+            points = pos; 
+            ppoints = ppos; 
+            normal = nor; 
+            light = color;
+            mat_ptr[0] = m0; 
+            mat_ptr[1] = m1; 
+            mat_ptr[2] = m2;
         }
         virtual bool hit(const ray& r, double tmin, double tmax, hit_record& rec) const;
         bool InPolygon(vec3 point) const;
