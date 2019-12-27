@@ -11,7 +11,12 @@ class sphere: public hittable  {
     public:
         sphere() {}
         sphere(vec3 cen, float r, vec3 col=vec3(0,0,0), material *m0=NULL, material *m1=NULL, material *m2=NULL){
-            center = cen; radius = r; color = col; mat_ptr[0] = m0; mat_ptr[1] = m1; mat_ptr[2] = m2;
+            center = cen; 
+            radius = r; 
+            color = col; 
+            mat_ptr[0] = m0; 
+            mat_ptr[1] = m1; 
+            mat_ptr[2] = m2;
         }
         virtual bool hit(const ray& r, float tmin, float tmax, hit_record& rec) const;
         vec3 center;

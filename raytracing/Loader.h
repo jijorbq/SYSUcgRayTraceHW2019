@@ -20,6 +20,11 @@
 
 std::vector<std::vector<float>>tomap;//需要映射的二维数组
 
+
+//###########################
+//###MAT:material,用于存放mtl文件中的不同
+//###
+//###########################
 struct MAT
 {
     std::vector<float>Ka;//环境反射

@@ -8,12 +8,12 @@ class ray
 {
     public:
         ray() {}
-        ray(const vec3& a, const vec3& b) { A = a; B = b; }
-        vec3 origin() const{ return A; }
-        vec3 direction() const{ return B; }
-        vec3 point_at_parameter(float t) const { return A + t*B; }
-        vec3 A;
-        vec3 B;
+        ray(const vec3& a, const vec3& b) { origin_point = a; ray_direction = b; }
+        vec3 origin() const{ return origin_point; }
+        vec3 direction() const{ return ray_direction; }
+        vec3 point_at_parameter(float t) const { return origin_point + t*ray_direction; }
+        vec3 origin_point;
+        vec3 ray_direction;
 };
 
 #endif // RAY_H
