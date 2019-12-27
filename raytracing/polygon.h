@@ -13,13 +13,8 @@ class polygon: public hittable  {
         polygon() {}
         polygon(std::vector<vec3> pos, std::vector<vec2> ppos, vec3 nor, vec3 color,
                 material *m0=NULL, material *m1=NULL, material *m2=NULL){
-            points = pos; 
-            ppoints = ppos; 
-            normal = nor; 
-            light = color;
-            mat_ptr[0] = m0; 
-            mat_ptr[1] = m1; 
-            mat_ptr[2] = m2;
+            points = pos; ppoints = ppos; normal = nor; light = color;
+            mat_ptr[0] = m0; mat_ptr[1] = m1; mat_ptr[2] = m2;
         }
         virtual bool hit(const ray& r, double tmin, double tmax, hit_record& rec) const;
         virtual bool bounding_box(float t0, float t1, aabb& box) const;
@@ -30,14 +25,16 @@ class polygon: public hittable  {
         vec3 normal; // normal
         material *mat_ptr[3]; // material
 };
+
 bool polygon::bounding_box(float t0, float t1, aabb &box) const{
-    box=aabb(points.begin(),points.begin());
+    box = aabb(points[0], points[0]);
     for (int i=0; i<points.size(); ++i)
         for (int j=0; j<3; ++j)
-            box._min=ffmin(box._min[j], points[i][j]),
-            box._max=ffmax(box._max[j], points[i][j]);
+            box._min[j]=ffmin(box._min[j], points[i][j]),
+            box._max[j]=ffmax(box._max[j], points[i][j]);
     return true;
 }
+
 bool polygon::InPolygon(vec3 P)const {
     int len=points.size();
     for(int i=1;i+1<len;i++)
@@ -53,38 +50,44 @@ void swap(double &a, double &b){
 
 vec2 getpos(std::vector<vec3> points, std::vector<vec2> ppoints, vec3 P){
     int len=points.size();
-    vec2 res(0,0);
+    vec2 res=ppoints[0];
 
-    double mat[len+2][len+2];
-    const double eps=1e-6;
-
-    for(int i=0;i<len;i++)mat[0][i]=points[i].x();
-    for(int i=0;i<len;i++)mat[1][i]=points[i].y();
-    for(int i=0;i<len;i++)mat[2][i]=points[i].z();
-    mat[0][len]=P.x(); mat[1][len]=P.y(); mat[2][len]=P.z();
-    // init
-
-    for(int i=0;i<3;i++)
+    for(int k=1;k+1<len;k++)
     {
-        int pos=i;
-        for(int j=i+1;j<3;j++)
-            if(fabs(mat[i][j])>fabs(mat[pos][j]))pos=i;
-        if(pos>i)
-            for(int j=0;j<=len;j++)swap(mat[i][j],mat[pos][j]);
-        if(fabs(mat[i][i])<eps){std::cout<<"+++"<<std::endl;continue;}
-        for(int j=i+1;j<3;j++)
+        if(!InTriangle(P, points[0], points[k], points[k+1]))continue;
+        double mat[3][3];
+        vec3 P0=points[0];
+        vec3 A=points[k]-P0, B=points[k+1]-P0, C=P-P0;
+        const double eps=1e-6;
+        mat[0][0]=A.x(); mat[0][1]=B.x(); mat[0][2]=C.x();
+        mat[1][0]=A.y(); mat[1][1]=B.y(); mat[1][2]=C.y();
+        mat[2][0]=A.z(); mat[2][1]=B.z(); mat[2][2]=C.z();
+
+        for(int i=0;i<2;i++)
         {
-            double tmp=mat[j][i]/mat[i][i];
-            for(int k=i;k<=len;k++)mat[j][k]-=tmp*mat[i][k];
+            int pos=i;
+            for(int j=i+1;j<3;j++)
+                if(fabs(mat[i][j])>fabs(mat[pos][j]))pos=i;
+            if(pos>i)
+                for(int j=0;j<=len;j++)swap(mat[i][j],mat[pos][j]);
+            if(fabs(mat[i][i])<eps){continue;}
+            for(int j=i+1;j<3;j++)
+            {
+                double tmp=mat[j][i]/mat[i][i];
+                for(int k=i;k<3;k++)mat[j][k]-=tmp*mat[i][k];
+            }
         }
+        float ans[2];int len=1;
+        for(int i=1;i>=0;i--){
+            if(fabs(mat[i][i])<eps)continue;
+            double val=mat[i][2]/mat[i][i];
+            for(int j=i-1;j>=0;j--)
+                mat[j][2] -= val*mat[j][i];
+            ans[len--]=float(val);
+        }
+        res+=(ppoints[k]-ppoints[0])*ans[0]+(ppoints[k+1]-ppoints[0])*ans[1];
+        break;
     }
-    for(int i=2;i>=0;i--){
-        double ans=mat[i][len]/mat[i][i];
-        for(int j=i-1;j>=0;j--)
-            mat[j][len] -= ans*mat[j][i];
-        res+=ppoints[i]*(float)ans;
-    }
-    // gauss
     return res;
 }
 // get pos in texture png by interpolation

@@ -340,8 +340,8 @@ hittable *combine(std::string objfile,std::string mtlfile, std::string basicfile
 
     printf("Polygon num: %d\n",len);
 
-//    return new hittable_list(list,len);
-    return new bvh_node(l,len, 0,0);
+    //return new hittable_list(list,len);
+    return new bvh_node(list, len, 0, 0);
 
 }
 

@@ -11,6 +11,7 @@ class hittable_list: public hittable {
         hittable_list(hittable **l, int n) {list = l; list_size = n; }
         virtual bool hit(
             const ray& r, double tmin, double tmax, hit_record& rec) const;
+        virtual bool bounding_box(float t0, float t1, aabb& box) const{return true;}
         hittable **list;
         int list_size;
 };
