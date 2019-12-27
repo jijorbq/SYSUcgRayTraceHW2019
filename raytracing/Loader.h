@@ -10,6 +10,7 @@
 #include "texture.h"
 #include "utils.h"
 #include "geometry.h"
+#include "bvh.h"
 
 #define vec2 glm::vec2
 #define MAXLEN 100000
@@ -339,7 +340,9 @@ hittable *combine(std::string objfile,std::string mtlfile, std::string basicfile
 
     printf("Polygon num: %d\n",len);
 
-    return new hittable_list(list,len);
+//    return new hittable_list(list,len);
+    return new bvh_node(l,len, 0,0);
+
 }
 
 hittable *load_scene(std::string fname, double *matrix)

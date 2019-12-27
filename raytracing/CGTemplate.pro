@@ -29,4 +29,6 @@ HEADERS += \
     sphere.h \
     stb_image.h \
     texture.h \
-    utils.h
+    utils.h \
+    aabb.h \
+    bvh.h
