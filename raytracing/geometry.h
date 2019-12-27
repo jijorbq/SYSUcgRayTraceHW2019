@@ -144,8 +144,9 @@ inline bool InTriangle(vec3 P, vec3 P0, vec3 P1, vec3 P2){
     double area1 = Area2(P, P0, P1);
     double area2 = Area2(P, P1, P2);
     double area3 = Area2(P, P2, P0);
-    return fabs(area1+area2+area3-Area2(P0, P1, P2))<5e-3;
+    double Area_All = Area2(P0, P1, P2);
+    //std::cout<<Area_All<<std::endl;
+    return fabs(area1+area2+area3-Area_All)<1e-1*sqrt(Area_All);
 }
-
 
 #endif // GEOMETRY_H
