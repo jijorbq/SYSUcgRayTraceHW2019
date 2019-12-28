@@ -35,19 +35,30 @@ struct MAT
     texture *Tex;
 };
 
+/*###################################################
+##  函数名称: translate
+##  函数描述： 点变换
+##  参数描述： matrix：矩阵，poi：坐标点
+#####################################################*/
 void translate(double *matrix, double *poi)
 {
-    double tmp[3];
+    double tmp[4];tmp[3]=1;
     for(int i=0;i<3;i++){
         tmp[i]=poi[i];poi[i]=0;
     }
     for(int i=0;i<3;i++)
         for(int j=0;j<4;j++)
-            poi[i]+=matrix[i+4*j]*tmp[i];
+            poi[i]+=matrix[i+4*j]*tmp[j];
 }
 // translate by matrix
 
 
+
+/*###################################################
+##  函数名称: random_scene
+##  函数描述： 构造场景
+##  参数描述： 无
+#####################################################*/
 hittable *random_scene() {
     int num=10;
     hittable **list = new hittable*[num+1];
@@ -100,6 +111,13 @@ hittable *random_scene() {
 // }
 
 
+
+/*###################################################
+##  函数名称: combine
+##  函数描述：读取obj和mtl文件
+##  参数描述： objfile：obj文件名，mtlfile：mtl文件名
+            basicfile：文件路径，matrix：变换矩阵
+#####################################################*/
 hittable *combine(std::string objfile,std::string mtlfile, std::string basicfile, double matrix[])
 {
     int len=0;
@@ -345,6 +363,12 @@ hittable *combine(std::string objfile,std::string mtlfile, std::string basicfile
 
 }
 
+
+/*###################################################
+##  函数名称: load_scene
+##  函数描述：读取obj和mtl文件
+##  参数描述： fname：文件名，matrix：变换矩阵
+#####################################################*/
 hittable *load_scene(std::string fname, double *matrix)
 {
     std::string basic="D:/CG_homework/raytracing/objs/";

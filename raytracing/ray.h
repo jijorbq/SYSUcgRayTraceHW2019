@@ -14,6 +14,11 @@ public:
         }
         vec3 origin() const { return origin_point; }
         vec3 direction() const { return ray_direction; }
+/*###################################################
+##  函数: point_at_parameter
+##  函数描述： 反射光线
+##  参数描述： t：系数
+#####################################################*/
         vec3 point_at_parameter(float t) const { return origin_point + t * ray_direction; }
         vec3 origin_point;
         vec3 ray_direction;

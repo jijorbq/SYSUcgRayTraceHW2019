@@ -15,7 +15,7 @@
 vec3 reflect(const vec3& v, const vec3& n) {
     return v - 2*dot(v,n)*n;
 }
-
+/*发生镜面反射的材质*/
 class metal : public material {
     public:
         metal(const vec3& a, texture * t=NULL, double f=0.0f) : albedo(a), tex(t) {
@@ -41,6 +41,8 @@ class metal : public material {
 };
 // 镜面反射
 
+
+/*发生漫反射的材质*/
 class lambertian : public material {
     public:
 /*###################################################
@@ -88,9 +90,13 @@ double schlick(double cosine, double ref_idx) {
     return r0 + (1-r0)*pow((1 - cosine),5);
 }
 
+/*发生折射的材质*/
 class dielectric : public material {
     public:
         dielectric(double ri) : ref_idx(ri) {}
+/*###################################################
+同上
+#####################################################*/
         virtual bool scatter(const ray& r_in, const hit_record& rec,
                              vec3& attenuation, ray& scattered) const {
             vec3 outward_normal;
