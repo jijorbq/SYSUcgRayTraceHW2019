@@ -5,6 +5,10 @@
 #include "hit.h"
 #include "geometry.h"
 
+/*###################################################
+##  hittable_list
+##  一个列表，继承hittable类，存储所有图形
+#####################################################*/
 class hittable_list: public hittable {
     public:
         hittable_list() {}
@@ -16,6 +20,15 @@ class hittable_list: public hittable {
         int list_size;
 };
 
+/*###################################################
+##  函数: hit
+##  函数描述： 暴力寻找撞击点，按顺序枚举所有图元找到最近的撞击点
+##  参数描述：
+##  ray: 入射光线
+##  t_min: 最小撞击距离
+##  t_max: 最大撞击距离
+##  hit_record: 撞击记录
+#####################################################*/
 bool hittable_list::hit(const ray& r, double t_min, double t_max,
                         hit_record& rec) const {
 

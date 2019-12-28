@@ -1,6 +1,11 @@
 #ifndef HIT_H
 #define HIT_H
 
+/*###################################################
+##  文件说明：
+##  撞击库，定义撞击相关的类
+#####################################################*/
+
 #include "utils.h"
 #include "ray.h"
 #include "geometry.h"
@@ -9,6 +14,10 @@
 
 class material;
 
+/*###################################################
+##  hit_record类
+##  记录撞击时的撞击点，法向量，光线等信息
+#####################################################*/
 struct hit_record {
     double t;
     vec3 p;
@@ -19,6 +28,10 @@ struct hit_record {
     material *mat_ptr[3];
 };
 
+/*###################################################
+##  hittable类
+##  图元的总基类，所有图元都继承此类
+#####################################################*/
 class hittable  {
     public:
         virtual bool hit(
@@ -26,13 +39,15 @@ class hittable  {
         virtual bool bounding_box(float t0, float t1, aabb& box) const=0;
 };
 
+/*###################################################
+##  material类
+##  材质的总基类，所有材质都继承此类
+#####################################################*/
 class material  {
     public:
         virtual bool scatter(
             const ray& r_in, const hit_record& rec, vec3& attenuation,
             ray& scattered) const = 0;
 };
-
-
 
 #endif // HIT_H

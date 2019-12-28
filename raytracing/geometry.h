@@ -1,3 +1,7 @@
+/*###################################################
+##  文件说明：
+##  计算几何库，包含三维向量的定义和若干操作。
+#####################################################*/
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
@@ -146,7 +150,10 @@ inline bool InTriangle(vec3 P, vec3 P0, vec3 P1, vec3 P2){
     double area3 = Area2(P, P2, P0);
     double Area_All = Area2(P0, P1, P2);
     //std::cout<<Area_All<<std::endl;
-    return fabs(area1+area2+area3-Area_All)<1e-1*sqrt(Area_All);
+    //return fabs(area1+area2+area3-Area_All)<0.05*sqrt(Area_All);
+    double res=fabs(area1+area2+area3-Area_All);
+    //if(Area_All<1e-2)return res<1e-3;
+    return res<0.017;
 }
 
 #endif // GEOMETRY_H
