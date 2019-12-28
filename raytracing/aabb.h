@@ -18,6 +18,7 @@
 inline float ffmin(float a, float b) { return a < b ? a : b; }
 inline float ffmax(float a, float b) { return a > b ? a : b; }
 
+//简单的包围盒类
 class aabb {
     public:
         aabb() {}
@@ -26,6 +27,8 @@ class aabb {
         vec3 min() const {return _min; }
         vec3 max() const {return _max; }
 
+        //判断包围盒相交:
+        //只需要判断盒子的3对对面与射线的交线段是否有公共部分
         bool hit(const ray& r, float tmin, float tmax) const {
             for (int a = 0; a < 3; a++) {
                 float t0 = ffmin((_min[a] - r.origin()[a]) / r.direction()[a],
@@ -44,6 +47,7 @@ class aabb {
         vec3 _max;
 };
 
+//两个包围盒求并集。
 aabb surrounding_box(aabb box0, aabb box1) {
     vec3 small( ffmin(box0.min().x(), box1.min().x()),
                 ffmin(box0.min().y(), box1.min().y()),
