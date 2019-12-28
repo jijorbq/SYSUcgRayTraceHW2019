@@ -7,6 +7,11 @@
 #include "geometry.h"
 #include "texture.h"
 
+/*###################################################
+##  函数: reflect
+##  函数描述： 求反射光线
+##  参数描述： v：入射光线；n：法线
+#####################################################*/
 vec3 reflect(const vec3& v, const vec3& n) {
     return v - 2*dot(v,n)*n;
 }
@@ -14,8 +19,13 @@ vec3 reflect(const vec3& v, const vec3& n) {
 class metal : public material {
     public:
         metal(const vec3& a, texture * t=NULL, double f=0.0f) : albedo(a), tex(t) {
-            if (f < 1) fuzz = f; else fuzz = 1;
+            fuzz =min(1,f);
         }
+/*###################################################
+##  函数: scatter
+##  函数描述： 判断是否有反射光线
+##  参数描述： r_in：入射光线，rec：存储每次碰撞发生的信息，attenuation：衰减，scattered：反射
+#####################################################*/
         virtual bool scatter(const ray& r_in, const hit_record& rec,
                              vec3& attenuation, ray& scattered) const {
             vec3 reflected = reflect(unit_vector(r_in.direction()), rec.normal);
@@ -33,6 +43,9 @@ class metal : public material {
 
 class lambertian : public material {
     public:
+/*###################################################
+同上
+#####################################################*/
         lambertian(const vec3& a, texture * t=NULL) : albedo(a), tex(t) {}
         virtual bool scatter(const ray& r_in, const hit_record& rec,
                              vec3& attenuation, ray& scattered) const {
@@ -48,6 +61,11 @@ class lambertian : public material {
 };
 // 漫反射
 
+/*###################################################
+##  函数: refract
+##  函数描述： 判断是否发生折射
+##  参数描述： v:入射，n：法线，ni_over_nt：系数，refracted：折射光线
+#####################################################*/
 bool refract(const vec3& v, const vec3& n, double ni_over_nt, vec3& refracted) {
     vec3 uv = unit_vector(v);
     double dt = dot(uv, n);
@@ -59,7 +77,11 @@ bool refract(const vec3& v, const vec3& n, double ni_over_nt, vec3& refracted) {
     else
         return false;
 }
-
+/*###################################################
+##  函数: schlick
+##  函数描述： 近似计算折射方向
+##  参数描述： cosine：入射方向，ref_idx：系数
+#####################################################*/
 double schlick(double cosine, double ref_idx) {
     double r0 = (1-ref_idx) / (1+ref_idx);
     r0 = r0*r0;
